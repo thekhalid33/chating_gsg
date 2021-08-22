@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_firebase_gsg/Auth/helpers/auth_helper.dart';
 import 'package:first_firebase_gsg/Auth/helpers/firestore_helper.dart';
 import 'package:first_firebase_gsg/Auth/models/register_request.dart';
+import 'package:first_firebase_gsg/Auth/models/user_model.dart';
 import 'package:first_firebase_gsg/chats/home_screen.dart';
 import 'package:first_firebase_gsg/services/custom_dialoug.dart';
 import 'package:first_firebase_gsg/services/routes_helper.dart';
@@ -17,6 +18,8 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController lNameController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
+  
+  List<UserModel> allUsers = [];
 
   resetController() {
     emailController.clear();
@@ -66,5 +69,20 @@ class AuthProvider extends ChangeNotifier {
   resetPassword() async {
     AuthHelper.authHelper.resetPassword(emailController.text);
     resetController();
+  }
+
+  getCurrentUser() {
+    User user = AuthHelper.authHelper.getCurrentUser();
+    return user;
+  }
+
+  getUserFromFirestore(String userId) async {
+    FirestoreHelper.firestoreHelper.getUserFromFirestore(userId);
+  }
+
+   getAllUsersFromFirestore() async {
+    allUsers =
+        await FirestoreHelper.firestoreHelper.getAllUsersFromFirestore();
+    notifyListeners();
   }
 }

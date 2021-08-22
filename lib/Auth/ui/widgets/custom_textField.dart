@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget {
-  String label;
-  TextEditingController textEditingController = TextEditingController();
+  final String label;
+  final TextEditingController textEditingController;
   CustomTextField({this.label, this.textEditingController});
   @override
   Widget build(BuildContext context) {

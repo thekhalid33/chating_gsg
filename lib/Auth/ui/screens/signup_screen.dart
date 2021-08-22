@@ -1,4 +1,3 @@
-import 'package:first_firebase_gsg/Auth/helpers/auth_helper.dart';
 import 'package:first_firebase_gsg/Auth/providers/auth_provider.dart';
 import 'package:first_firebase_gsg/Auth/ui/widgets/custom_textField.dart';
 import 'package:first_firebase_gsg/ui/global_widgets/custom_button_global.dart';

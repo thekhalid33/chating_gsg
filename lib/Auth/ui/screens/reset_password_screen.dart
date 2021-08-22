@@ -1,4 +1,3 @@
-import 'package:first_firebase_gsg/Auth/helpers/auth_helper.dart';
 import 'package:first_firebase_gsg/Auth/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
