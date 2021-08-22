@@ -67,7 +67,7 @@ class FirebaseConfiguration extends StatelessWidget {
           );
         }
         if (dataSnapshot.connectionState == ConnectionState.done) {
-          if (Provider.of<AuthProvider>(context).getCurrentUser() != null) {
+          if (Provider.of<AuthProvider>(context,listen: false).getCurrentUser() != null) {
             return HomeScreen();
           }
           else{
