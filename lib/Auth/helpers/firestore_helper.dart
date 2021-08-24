@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:first_firebase_gsg/Auth/models/country_model.dart';
 import 'package:first_firebase_gsg/Auth/models/register_request.dart';
 import 'package:first_firebase_gsg/Auth/models/user_model.dart';
 
@@ -35,5 +36,16 @@ class FirestoreHelper {
         docs.map((e) => UserModel.fromMap(e.data())).toList();
     print(users.length);
     return users;
+  }
+
+  Future<List<CountryModel>> getAllCountries() async {
+    QuerySnapshot querySnapshot =
+        await firebaseFirestore.collection('countries').get();
+    List<CountryModel> countries = querySnapshot.docs.map((e) {
+      Map map = e.data();
+      map['id'] = e.id;
+      return CountryModel.fromJson(e.data());
+    }).toList();
+    return countries;
   }
 }

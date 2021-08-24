@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_firebase_gsg/Auth/helpers/auth_helper.dart';
 import 'package:first_firebase_gsg/Auth/helpers/firestore_helper.dart';
+import 'package:first_firebase_gsg/Auth/models/country_model.dart';
 import 'package:first_firebase_gsg/Auth/models/register_request.dart';
 import 'package:first_firebase_gsg/Auth/models/user_model.dart';
 import 'package:first_firebase_gsg/chats/home_screen.dart';
@@ -11,6 +12,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
+  AuthProvider() {
+    getCountriesFromFirestore();
+  }
   TabController tabController;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -18,7 +22,33 @@ class AuthProvider extends ChangeNotifier {
   TextEditingController lNameController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController countryController = TextEditingController();
-  
+
+  List<CountryModel> countries;
+  List<String> cities = [];
+
+  CountryModel selectedCountry;
+  String selectedCity;
+
+  selectCountry(CountryModel countryModel) {
+    this.selectedCountry = countryModel;
+    this.cities = countryModel.cities;
+    selectCity(cities.first.toString());
+    notifyListeners();
+  }
+
+  selectCity(dynamic city){
+    this.selectedCity = city;
+    notifyListeners();
+  }
+
+  getCountriesFromFirestore() async {
+    List<CountryModel> countries =
+        await FirestoreHelper.firestoreHelper.getAllCountries();
+    this.countries = countries;
+    selectCountry(countries.first);
+    notifyListeners();
+  }
+
   List<UserModel> allUsers = [];
 
   resetController() {
@@ -80,9 +110,11 @@ class AuthProvider extends ChangeNotifier {
     FirestoreHelper.firestoreHelper.getUserFromFirestore(userId);
   }
 
-   getAllUsersFromFirestore() async {
-    allUsers =
-        await FirestoreHelper.firestoreHelper.getAllUsersFromFirestore();
+  getAllUsersFromFirestore() async {
+    allUsers = await FirestoreHelper.firestoreHelper.getAllUsersFromFirestore();
     notifyListeners();
   }
 }
+
+
+
