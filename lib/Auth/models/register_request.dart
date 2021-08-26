@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class RegisterRequest {
   String id;
   String email;
@@ -6,17 +8,19 @@ class RegisterRequest {
   String lName;
   String city;
   String country;
+  String imageUrl;
   RegisterRequest({
     this.id,
-    this.email,
-    this.password,
-    this.fName,
-    this.lName,
-    this.city,
-    this.country,
+    @required this.email,
+    @required this.password,
+    @required this.fName,
+    @required this.lName,
+    @required this.city,
+    @required this.country,
+    @required this.imageUrl,
   });
 
-   toMap() {
+  toMap() {
     return {
       'id': id,
       'email': email,
@@ -25,6 +29,7 @@ class RegisterRequest {
       'lName': lName,
       'city': city,
       'country': country,
+      'imageUrl': this.imageUrl,
     };
   }
 }

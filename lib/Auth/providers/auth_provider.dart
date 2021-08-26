@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:first_firebase_gsg/Auth/helpers/auth_helper.dart';
+import 'package:first_firebase_gsg/Auth/helpers/firestorage_helper.dart';
 import 'package:first_firebase_gsg/Auth/helpers/firestore_helper.dart';
 import 'package:first_firebase_gsg/Auth/models/country_model.dart';
 import 'package:first_firebase_gsg/Auth/models/register_request.dart';
@@ -10,25 +13,22 @@ import 'package:first_firebase_gsg/services/routes_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider() {
-    getCountriesFromFirestore();
+    // getCountriesFromFirestore();
   }
   TabController tabController;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController fNameController = TextEditingController();
   TextEditingController lNameController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  TextEditingController countryController = TextEditingController();
 
   List<CountryModel> countries;
-  List<String> cities = [];
-
+  List<dynamic> cities = [];
   CountryModel selectedCountry;
   String selectedCity;
-
   selectCountry(CountryModel countryModel) {
     this.selectedCountry = countryModel;
     this.cities = countryModel.cities;
@@ -36,7 +36,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  selectCity(dynamic city){
+  selectCity(dynamic city) {
     this.selectedCity = city;
     notifyListeners();
   }
@@ -48,6 +48,18 @@ class AuthProvider extends ChangeNotifier {
     selectCountry(countries.first);
     notifyListeners();
   }
+
+///////////////////////////////////////////////////
+  ///upload Image
+  File file;
+  selectFile() async {
+    XFile imageFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    this.file = File(imageFile.path);
+    notifyListeners();
+  }
+
+///////////////////////////////////////////////////
 
   List<UserModel> allUsers = [];
 
@@ -68,6 +80,8 @@ class AuthProvider extends ChangeNotifier {
   signin() async {
     UserCredential userCredential = await AuthHelper.authHelper
         .signin(emailController.text, passwordController.text);
+    String imageUrl =
+        await FirebaseStorageHelper.firebaseStorageHelper.uploadImage(file);
     FirestoreHelper.firestoreHelper.addUserToFireStore(
       RegisterRequest(
         id: userCredential.user.uid,
@@ -75,10 +89,12 @@ class AuthProvider extends ChangeNotifier {
         password: passwordController.text,
         fName: fNameController.text,
         lName: lNameController.text,
-        city: cityController.text,
-        country: countryController.text,
+        city: selectedCity,
+        country: selectedCountry.name,
+        imageUrl: imageUrl,
       ),
     );
+
     bool isVerifiedEmail = AuthHelper.authHelper.checkEmailVerification();
     if (isVerifiedEmail) {
       RouteHelper.routeHelper.goToPageWithReplacement(HomeScreen.routeName);
@@ -115,6 +131,3 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-
-

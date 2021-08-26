@@ -1,4 +1,7 @@
+import 'package:first_firebase_gsg/Auth/helpers/auth_helper.dart';
+import 'package:first_firebase_gsg/Auth/helpers/firestore_helper.dart';
 import 'package:first_firebase_gsg/Auth/providers/auth_provider.dart';
+import 'package:first_firebase_gsg/Auth/ui/screens/auth_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,16 +31,20 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // ElevatedButton(
-          //   style: ElevatedButton.styleFrom(
-          //     primary: Colors.red,
-          //   ),
-          //   onPressed: () {
-          //     Provider.of<AuthProvider>(context,listen: false).getAllUsersFromFirestore();
-          //   },
-          //   child: Text('get all users'),
-          // ),
-
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.red,
+            ),
+            onPressed: () {
+              AuthHelper.authHelper.logout();
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => AuthMainScreen(),
+                  ),
+                  (route) => false);
+            },
+            child: Text('log out'),
+          ),
           ListView.builder(
             itemCount: Provider.of<AuthProvider>(context).allUsers.length,
             scrollDirection: Axis.vertical,

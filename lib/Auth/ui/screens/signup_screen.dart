@@ -7,16 +7,41 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   static final String routeName = '/signup';
+
+  @override
+  _SignupScreenState createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  @override
+  void initState() {
+    Provider.of<AuthProvider>(context, listen: false)
+        .getCountriesFromFirestore();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthProvider>(
-      builder: (context, provider, child) {
+      builder: (context, provider, x) {
         return SingleChildScrollView(
           child: Column(
-            children: <Widget>[
+            children: [
+              GestureDetector(
+                onTap: () {
+                  provider.selectFile();
+                },
+                child: Container(
+                  height: 200,
+                  width: 200,
+                  color: Colors.grey,
+                  child: provider.file == null
+                      ? Container()
+                      : Image.file(provider.file, fit: BoxFit.cover),
+                ),
+              ),
               CustomTextField(
                 label: 'Email',
                 textEditingController: provider.emailController,
@@ -33,24 +58,15 @@ class SignupScreen extends StatelessWidget {
                 label: 'Last Name',
                 textEditingController: provider.lNameController,
               ),
-              CustomTextField(
-                label: 'City',
-                textEditingController: provider.cityController,
-              ),
-              CustomTextField(
-                label: 'Country',
-                textEditingController: provider.countryController,
-              ),
               provider.countries == null
                   ? Container()
                   : Container(
                       padding:
                           EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(15)),
                       child: DropdownButton<CountryModel>(
                         isExpanded: true,
                         underline: Container(),
@@ -63,7 +79,7 @@ class SignupScreen extends StatelessWidget {
                             child: Text(e.name),
                             value: e,
                           );
-                        }),
+                        }).toList(),
                       ),
                     ),
               provider.countries == null
@@ -71,11 +87,10 @@ class SignupScreen extends StatelessWidget {
                   : Container(
                       padding:
                           EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(15)),
                       child: DropdownButton<dynamic>(
                         isExpanded: true,
                         underline: Container(),
@@ -88,7 +103,7 @@ class SignupScreen extends StatelessWidget {
                             child: Text(e),
                             value: e,
                           );
-                        }),
+                        }).toList(),
                       ),
                     ),
               CustomButtonGlobal(
